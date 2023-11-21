@@ -2,6 +2,9 @@ import os
 
 import coloredlogs
 import uvicorn
+from dotenv import load_dotenv
+
+load_dotenv(".env")
 
 ## Configure coloredlogs
 coloredlogs.install(
@@ -12,7 +15,7 @@ coloredlogs.install(
 ## Get App Environment Files
 env = os.environ.get("ENV", "development")
 host = os.environ.get("HOST", "0.0.0.0")
-port = os.environ.get("PORT", 8000)
+port = int(os.environ.get("PORT", 8000))
 
 ## Define Workspace Environment
 reload_flag = False

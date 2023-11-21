@@ -1,11 +1,8 @@
-from pydantic import BaseSettings
+import os
 
 
-class Settings(BaseSettings):
-    TEST_VAR: str
-
-    class Config:
-        env_file = ".env"
+class Settings:
+    SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI")
 
 
 settings = Settings()
