@@ -23,3 +23,12 @@ class User(BaseMixin, Base):
     __tablename__ = "users"
 
     name: Mapped[str] = mapped_column(unique=True)
+
+
+class Note(BaseMixin, Base):
+    __tablename__ = "notes"
+
+    title: Mapped[str] = mapped_column(nullable=False)
+    description: Mapped[str] = mapped_column(nullable=True)
+    status: Mapped[str] = mapped_column(default="PENDING")
+    target_date: Mapped[datetime] = mapped_column(nullable=True)
