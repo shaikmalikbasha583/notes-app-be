@@ -9,6 +9,7 @@ class CreateNote(BaseModel):
     description: str
     status: Optional[str] = "PENDING"
     target_date: datetime
+    user_id: int
 
 
 class UpdateNote(BaseModel):

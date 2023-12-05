@@ -1,6 +1,8 @@
 from datetime import datetime
+from typing import List
 
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.main.config.db_config import Base
 
@@ -24,6 +26,9 @@ class User(BaseMixin, Base):
 
     name: Mapped[str] = mapped_column(unique=True)
 
+    ## Relationship Attributes
+    notes: Mapped[List["Note"]] = relationship(back_populates="user", lazy="selectin")
+
 
 class Note(BaseMixin, Base):
     __tablename__ = "notes"
@@ -32,3 +37,7 @@ class Note(BaseMixin, Base):
     description: Mapped[str] = mapped_column(nullable=True)
     status: Mapped[str] = mapped_column(default="PENDING")
     target_date: Mapped[datetime] = mapped_column(nullable=True)
+
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+
+    user: Mapped["User"] = relationship(back_populates="notes", lazy="selectin")

@@ -10,7 +10,10 @@ from app.main.models.db_models import Note
 async def save_note(db: AsyncSession, note):
     logging.info(f"Creating new note...\n{note}")
     new_note = Note(
-        title=note.title, description=note.description, target_date=note.target_date
+        title=note.title,
+        description=note.description,
+        target_date=note.target_date,
+        user_id=note.user_id,
     )
     db.add(new_note)
     await db.commit()
