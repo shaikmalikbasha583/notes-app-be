@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from app.main.config.db_config import AsyncSession, get_db_async
-from app.main.schemas.user_schema import CreateUser
+from app.main.schemas.user_schema import CreateUser, UpdateUser
 from app.main.services.user_service import (
     fetch_all_users,
     fetch_user_by_id,
@@ -35,17 +35,17 @@ async def add_user(user: CreateUser, db: AsyncSession = Depends(get_db_async)):
     }
 
 
-@user_router.put("/{user_id}")
-async def update_user(
-    user_id: int, user: CreateUser, db: AsyncSession = Depends(get_db_async)
-):
-    updated_user = await update_user_by_id(db, user_id, user)
-    return {"updated_user": updated_user}
-
-
 @user_router.get("/{user_id}")
 async def get_user_by_id(user_id: int, db: AsyncSession = Depends(get_db_async)):
     user = await fetch_user_by_id(db, user_id)
+    if user is None:
+        return {
+            "success": True,
+            "message": "User not found",
+            "ui_message": f"User with id:'{user_id}' doesn't exist",
+            "user": None,
+        }
+
     return {
         "success": True,
         "message": "User details",
@@ -54,12 +54,25 @@ async def get_user_by_id(user_id: int, db: AsyncSession = Depends(get_db_async))
     }
 
 
+@user_router.put("/{user_id}")
+async def update_user(
+    user_id: int, user: UpdateUser, db: AsyncSession = Depends(get_db_async)
+):
+    updated_user = await update_user_by_id(db, user_id, user)
+    return {
+        "success": True,
+        "message": "User has been successfully updated",
+        "ui_message": "User has been successfully updated",
+        "updated_user": updated_user,
+    }
+
+
 @user_router.delete("/{user_id}")
 async def delete_user_by_id(user_id: int, db: AsyncSession = Depends(get_db_async)):
-    deleted_flag = await remove_user_by_id(db, user_id)
+    deleted_user = await remove_user_by_id(db, user_id)
     return {
         "success": True,
         "message": "User has been successfully deleted!",
         "ui_message": "User has been successfully deleted!",
-        "is_deleted": deleted_flag,
+        "is_deleted": deleted_user.is_deleted,
     }

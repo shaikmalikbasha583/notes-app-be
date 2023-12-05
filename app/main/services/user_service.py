@@ -1,7 +1,7 @@
 import logging
 
 from fastapi import HTTPException, status
-from sqlalchemy import delete, select, update
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.main.models.db_models import User
@@ -17,14 +17,13 @@ async def save_user(db: AsyncSession, user):
 
 
 async def fetch_all_users(db: AsyncSession):
+    logging.info("Fetching all users from the database...")
     results = await db.execute(select(User).where(User.is_deleted == False))
     return results.scalars().all()
 
 
 async def update_user_by_id(db: AsyncSession, user_id: int, user):
-    stmt = select(User).where(User.id == user_id)
-    result = await db.execute(stmt)
-    db_user = result.scalar_one_or_none()
+    db_user = await fetch_user_by_id(db, user_id)
 
     if db_user is None:
         raise HTTPException(
@@ -51,8 +50,8 @@ async def update_user_by_id(db: AsyncSession, user_id: int, user):
             detail={
                 "success": False,
                 "message": "Bad Request",
-                "description": "User Not Found",
-                "ui_message": f"User with id:'{user_id}' doesn't exist",
+                "description": "Insufficient Details",
+                "ui_message": "Please provide the valid details",
             },
         )
     await db.execute(update_stmt)
@@ -61,27 +60,14 @@ async def update_user_by_id(db: AsyncSession, user_id: int, user):
 
 
 async def fetch_user_by_id(db: AsyncSession, user_id: int):
-    stmt = select(User).where(User.id == user_id and User.is_deleted == False)
+    logging.info(f"Fetching user with id: '{user_id}' from the database...")
+    stmt = select(User).where(User.id == user_id).where(User.is_deleted == False)
     result = await db.execute(stmt)
-    db_user = result.scalar_one_or_none()
-
-    if db_user is None:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail={
-                "success": False,
-                "message": "Bad Request",
-                "description": "User Not Found",
-                "ui_message": f"User with id:'{user_id}' doesn't exist",
-            },
-        )
-    return db_user
+    return result.scalar_one_or_none()
 
 
 async def remove_user_by_id(db: AsyncSession, user_id: int):
-    stmt = select(User).where(User.id == user_id)
-    result = await db.execute(stmt)
-    db_user = result.scalar_one_or_none()
+    db_user = await fetch_user_by_id(db, user_id)
 
     if db_user is None:
         raise HTTPException(
@@ -93,8 +79,10 @@ async def remove_user_by_id(db: AsyncSession, user_id: int):
                 "ui_message": f"User with id:'{user_id}' doesn't exist",
             },
         )
+
     delete_stmt = update(User).where(User.id == user_id).values(is_deleted=True)
-    print(delete_stmt)
+
     await db.execute(delete_stmt)
+    await db.commit()
     await db.refresh(db_user)
-    return True
+    return db_user
