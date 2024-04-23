@@ -5,6 +5,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.main.config.db_config import Base
+from app.main.utils.common_utils import get_timestamp_in_utc
 
 
 class BaseMixin(object):
@@ -13,10 +14,10 @@ class BaseMixin(object):
     id: Mapped[int] = mapped_column(primary_key=True, sort_order=-1)
     created_by: Mapped[int] = mapped_column(default=0)
     updated_by: Mapped[int] = mapped_column(default=0)
-    created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(default=get_timestamp_in_utc)
     updated_at: Mapped[datetime] = mapped_column(
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow,
+        default=get_timestamp_in_utc,
+        onupdate=get_timestamp_in_utc,
     )
     is_deleted: Mapped[bool] = mapped_column(default=False)
 

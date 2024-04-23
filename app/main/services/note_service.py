@@ -68,6 +68,7 @@ async def update_note_by_id(db: AsyncSession, note_id: int, note):
             },
         )
     await db.execute(update_stmt)
+    await db.commit()
     await db.refresh(db_note)
     return db_note
 

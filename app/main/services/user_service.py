@@ -55,6 +55,7 @@ async def update_user_by_id(db: AsyncSession, user_id: int, user):
             },
         )
     await db.execute(update_stmt)
+    await db.commit()
     await db.refresh(db_user)
     return db_user
 
