@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, Query
 
 from app.main.config.db_config import AsyncSession, get_db_async
 from app.main.schemas.note_schema import CreateNote, UpdateNote
@@ -14,8 +16,12 @@ note_router = APIRouter(prefix="/notes", tags=["Note Routers"])
 
 
 @note_router.get("/")
-async def get_all_notes(db: AsyncSession = Depends(get_db_async)):
-    notes = await fetch_all_notes(db)
+async def get_all_notes(
+    db: AsyncSession = Depends(get_db_async),
+    offset: int = 0,
+    limit: Annotated[int, Query(le=15)] = 10,
+):
+    notes = await fetch_all_notes(db, offset, limit)
     return {
         "success": True,
         "message": "List of notes",

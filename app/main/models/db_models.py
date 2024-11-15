@@ -31,6 +31,12 @@ class User(BaseMixin, Base):
     notes: Mapped[List["Note"]] = relationship(back_populates="user", lazy="selectin")
 
 
+class DummyTable(BaseMixin, Base):
+    __tablename__ = "dummy_table"
+
+    description: Mapped[str] = mapped_column(nullable=True)
+
+
 class Note(BaseMixin, Base):
     __tablename__ = "notes"
 

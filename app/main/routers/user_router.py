@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, Query
 
 from app.main.config.db_config import AsyncSession, get_db_async
 from app.main.schemas.user_schema import CreateUser, UpdateUser
@@ -14,8 +16,12 @@ user_router = APIRouter(prefix="/users", tags=["User Routers"])
 
 
 @user_router.get("/")
-async def get_all_users(db: AsyncSession = Depends(get_db_async)):
-    users = await fetch_all_users(db)
+async def get_all_users(
+    db: AsyncSession = Depends(get_db_async),
+    offset: int = 0,
+    limit: Annotated[int, Query(le=15)] = 10,
+):
+    users = await fetch_all_users(db, offset, limit)
     return {
         "success": True,
         "message": "List of users",

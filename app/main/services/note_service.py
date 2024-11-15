@@ -1,4 +1,5 @@
 import logging
+from typing import Sequence
 
 from fastapi import HTTPException, status
 from sqlalchemy import select, update
@@ -22,9 +23,14 @@ async def save_note(db: AsyncSession, note):
     return new_note
 
 
-async def fetch_all_notes(db: AsyncSession):
+async def fetch_all_notes(db: AsyncSession, offset: int, limit: int) -> Sequence[Note]:
     logging.info("Fetching all saved notes...")
-    notes = await db.execute(select(Note).where(Note.is_deleted == False))
+    notes = await db.execute(
+        select(Note)
+        .where(Note.is_deleted == False)
+        .offset(offset=offset)
+        .limit(limit=limit)
+    )
     return notes.scalars().all()
 
 

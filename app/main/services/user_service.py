@@ -1,5 +1,5 @@
 import logging
-
+from typing import Sequence
 from fastapi import HTTPException, status
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -16,9 +16,14 @@ async def save_user(db: AsyncSession, user):
     return new_user
 
 
-async def fetch_all_users(db: AsyncSession):
+async def fetch_all_users(db: AsyncSession, offset: int, limit: int) -> Sequence[User]:
     logging.info("Fetching all users from the database...")
-    results = await db.execute(select(User).where(User.is_deleted == False))
+    results = await db.execute(
+        select(User)
+        .where(User.is_deleted == False)
+        .offset(offset=offset)
+        .limit(limit=limit)
+    )
     return results.scalars().all()
 
 
