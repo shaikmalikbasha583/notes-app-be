@@ -9,7 +9,7 @@ from app.main.config.vars_config import settings
 engine = create_async_engine(
     settings.SQLALCHEMY_DATABASE_URI,
     connect_args={"check_same_thread": False},
-    # echo=True,
+    echo=True,
     logging_name=logging.INFO,
 )
 SessionLocal = async_sessionmaker(engine, expire_on_commit=False)

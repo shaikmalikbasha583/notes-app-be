@@ -9,7 +9,6 @@ from typing import List, Optional, Type, TypeVar
 from fastapi import HTTPException, status
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
 
 # Define a generic type for models
 T = TypeVar("T")

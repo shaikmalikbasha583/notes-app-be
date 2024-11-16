@@ -6,7 +6,6 @@ This Router is not in USE
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.main.config.db_config import AsyncSession, get_db_async
 from app.main.models.db_models import User

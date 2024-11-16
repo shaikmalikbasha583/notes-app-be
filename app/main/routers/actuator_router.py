@@ -1,5 +1,3 @@
-import logging
-
 from fastapi import APIRouter
 
 from app.main.services.actuator_service import get_app_info

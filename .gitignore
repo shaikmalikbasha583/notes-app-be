@@ -8,3 +8,4 @@ venv
 *.db
 
 tmp
+.ruff_cache

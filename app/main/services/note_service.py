@@ -6,7 +6,7 @@ from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.main.models.db_models import Note
-from app.main.schemas.note_schema import CreateNote, UpdateNote
+from app.main.schemas.note_schema import CreateNote
 
 
 async def save_note(db: AsyncSession, note: CreateNote):
