@@ -6,9 +6,10 @@ from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.main.models.db_models import Note
+from app.main.schemas.note_schema import CreateNote, UpdateNote
 
 
-async def save_note(db: AsyncSession, note):
+async def save_note(db: AsyncSession, note: CreateNote):
     logging.info(f"Creating new note...\n{note}")
     new_note = Note(
         title=note.title,
@@ -42,7 +43,7 @@ async def fetch_note_by_id(db: AsyncSession, note_id: int):
 
 
 async def update_note_by_id(db: AsyncSession, note_id: int, note):
-    db_note = await update_note_by_id(db, note_id)
+    db_note = await fetch_note_by_id(db, note_id)
 
     if db_note is None:
         raise HTTPException(
@@ -80,7 +81,7 @@ async def update_note_by_id(db: AsyncSession, note_id: int, note):
 
 
 async def remove_note_by_id(db: AsyncSession, note_id: int):
-    db_note = await update_note_by_id(db, note_id)
+    db_note = await fetch_note_by_id(db, note_id)
 
     if db_note is None:
         raise HTTPException(

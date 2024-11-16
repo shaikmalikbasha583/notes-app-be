@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, status
 
 from app.main.config.db_config import initialize_db
 from app.main.routers.mapper import route_mapper
@@ -18,9 +18,23 @@ app = FastAPI(
     summary=constants.APP_SUMMARY,
     description=constants.APP_DESC,
     version=constants.APP_VERSION,
+    docs_url=constants.API_DOCS_URL,
+    redoc_url=constants.API_REDOCS_URL,
     contact={"name": "Shaik Malik Basha", "email": "shaikmalikbasha@example.com"},
     license_info={"name": "MIT"},
     lifespan=lifespan,
 )
+
+
+@app.get("/", status_code=status.HTTP_200_OK)
+async def index(req: Request):
+    host: str = f"{req.url.scheme}://{req.url.hostname}:{req.url.port}"
+
+    return {
+        "success": True,
+        "docs": host + constants.API_DOCS_URL,
+        "redoc": host + constants.API_REDOCS_URL,
+    }
+
 
 app.include_router(route_mapper, prefix=constants.API_VERSION)

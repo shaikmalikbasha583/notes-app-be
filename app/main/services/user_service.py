@@ -1,13 +1,15 @@
 import logging
 from typing import Sequence
+
 from fastapi import HTTPException, status
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.main.models.db_models import User
+from app.main.schemas.user_schema import CreateUser, UpdateUser
 
 
-async def save_user(db: AsyncSession, user):
+async def save_user(db: AsyncSession, user: CreateUser):
     new_user = User(name=user.name)
     db.add(new_user)
     await db.commit()
@@ -27,7 +29,7 @@ async def fetch_all_users(db: AsyncSession, offset: int, limit: int) -> Sequence
     return results.scalars().all()
 
 
-async def update_user_by_id(db: AsyncSession, user_id: int, user):
+async def update_user_by_id(db: AsyncSession, user_id: int, user: UpdateUser):
     db_user = await fetch_user_by_id(db, user_id)
 
     if db_user is None:
