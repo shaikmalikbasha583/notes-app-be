@@ -28,7 +28,7 @@ async def fetch_all_notes(db: AsyncSession, offset: int, limit: int) -> Sequence
     logging.info("Fetching all saved notes...")
     notes = await db.execute(
         select(Note)
-        .where(Note.is_deleted == False)
+        .where(Note.is_deleted.is_(False))
         .offset(offset=offset)
         .limit(limit=limit)
     )
@@ -37,7 +37,7 @@ async def fetch_all_notes(db: AsyncSession, offset: int, limit: int) -> Sequence
 
 async def fetch_note_by_id(db: AsyncSession, note_id: int):
     logging.info(f"Fetching Note with id: '{note_id}' from the database...")
-    stmt = select(Note).where(Note.id == note_id).where(Note.is_deleted == False)
+    stmt = select(Note).where(Note.id == note_id).where(Note.is_deleted.is_(False))
     result = await db.execute(stmt)
     return result.scalar_one_or_none()
 

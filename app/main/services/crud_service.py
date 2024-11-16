@@ -37,7 +37,7 @@ class CRUDService:
         logging.info(f"Fetching all {self.model.__name__}s from the database...")
         stmt = (
             select(self.model)
-            .where(self.model.is_deleted == False)
+            .where(self.model.is_deleted.is_(False))
             .offset(offset)
             .limit(limit)
         )
@@ -52,7 +52,7 @@ class CRUDService:
         stmt = (
             select(self.model)
             .where(self.model.id == entity_id)
-            .where(self.model.is_deleted == False)
+            .where(self.model.is_deleted.is_(False))
         )
         result = await db.execute(stmt)
         return result.scalar_one_or_none()

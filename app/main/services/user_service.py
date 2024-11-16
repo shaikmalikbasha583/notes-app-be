@@ -22,7 +22,7 @@ async def fetch_all_users(db: AsyncSession, offset: int, limit: int) -> Sequence
     logging.info("Fetching all users from the database...")
     results = await db.execute(
         select(User)
-        .where(User.is_deleted == False)
+        .where(User.is_deleted.is_(False))
         .offset(offset=offset)
         .limit(limit=limit)
     )
@@ -69,7 +69,7 @@ async def update_user_by_id(db: AsyncSession, user_id: int, user: UpdateUser):
 
 async def fetch_user_by_id(db: AsyncSession, user_id: int):
     logging.info(f"Fetching user with id: '{user_id}' from the database...")
-    stmt = select(User).where(User.id == user_id).where(User.is_deleted == False)
+    stmt = select(User).where(User.id == user_id).where(User.is_deleted.is_(False))
     result = await db.execute(stmt)
     return result.scalar_one_or_none()
 
