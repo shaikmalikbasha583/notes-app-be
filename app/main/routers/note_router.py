@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, status
 
 from app.main.config.db_config import AsyncSession, get_db_async
 from app.main.schemas.note_schema import CreateNote, UpdateNote
@@ -15,7 +15,7 @@ from app.main.services.note_service import (
 note_router = APIRouter(prefix="/notes", tags=["Note Routers"])
 
 
-@note_router.get("/")
+@note_router.get("/", status_code=status.HTTP_200_OK)
 async def get_all_notes(
     db: AsyncSession = Depends(get_db_async),
     offset: int = 0,
@@ -30,7 +30,7 @@ async def get_all_notes(
     }
 
 
-@note_router.post("/")
+@note_router.post("/", status_code=status.HTTP_201_CREATED)
 async def add_note(note: CreateNote, db: AsyncSession = Depends(get_db_async)):
     new_note = await save_note(db, note)
     return {
@@ -41,7 +41,7 @@ async def add_note(note: CreateNote, db: AsyncSession = Depends(get_db_async)):
     }
 
 
-@note_router.get("/{note_id}")
+@note_router.get("/{note_id}", status_code=status.HTTP_200_OK)
 async def get_note_by_id(note_id: int, db: AsyncSession = Depends(get_db_async)):
     db_note = await fetch_note_by_id(db, note_id)
     if db_note is None:
@@ -60,7 +60,7 @@ async def get_note_by_id(note_id: int, db: AsyncSession = Depends(get_db_async))
     }
 
 
-@note_router.put("/{note_id}")
+@note_router.put("/{note_id}", status_code=status.HTTP_202_ACCEPTED)
 async def update_note(
     note_id: int, note: UpdateNote, db: AsyncSession = Depends(get_db_async)
 ):
@@ -73,7 +73,7 @@ async def update_note(
     }
 
 
-@note_router.delete("/{note_id}")
+@note_router.delete("/{note_id}", status_code=status.HTTP_202_ACCEPTED)
 async def delete_note_by_id(note_id: int, db: AsyncSession = Depends(get_db_async)):
     deleted_note = await remove_note_by_id(db, note_id)
     return {

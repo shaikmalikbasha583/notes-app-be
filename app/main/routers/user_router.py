@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, status
 
 from app.main.config.db_config import AsyncSession, get_db_async
 from app.main.schemas.user_schema import CreateUser, UpdateUser
@@ -15,7 +15,7 @@ from app.main.services.user_service import (
 user_router = APIRouter(prefix="/users", tags=["User Routers"])
 
 
-@user_router.get("/")
+@user_router.get("/", status_code=status.HTTP_200_OK)
 async def get_all_users(
     db: AsyncSession = Depends(get_db_async),
     offset: int = 0,
@@ -30,7 +30,7 @@ async def get_all_users(
     }, 205
 
 
-@user_router.post("/")
+@user_router.post("/", status_code=status.HTTP_201_CREATED)
 async def add_user(user: CreateUser, db: AsyncSession = Depends(get_db_async)):
     new_user = await save_user(db, user)
     return {
@@ -41,7 +41,7 @@ async def add_user(user: CreateUser, db: AsyncSession = Depends(get_db_async)):
     }
 
 
-@user_router.get("/{user_id}")
+@user_router.get("/{user_id}", status_code=status.HTTP_200_OK)
 async def get_user_by_id(user_id: int, db: AsyncSession = Depends(get_db_async)):
     user = await fetch_user_by_id(db, user_id)
     if user is None:
@@ -60,7 +60,7 @@ async def get_user_by_id(user_id: int, db: AsyncSession = Depends(get_db_async))
     }
 
 
-@user_router.put("/{user_id}")
+@user_router.put("/{user_id}", status_code=status.HTTP_202_ACCEPTED)
 async def update_user(
     user_id: int, user: UpdateUser, db: AsyncSession = Depends(get_db_async)
 ):
@@ -73,7 +73,7 @@ async def update_user(
     }
 
 
-@user_router.delete("/{user_id}")
+@user_router.delete("/{user_id}", status_code=status.HTTP_202_ACCEPTED)
 async def delete_user_by_id(user_id: int, db: AsyncSession = Depends(get_db_async)):
     deleted_user = await remove_user_by_id(db, user_id)
     return {
