@@ -27,7 +27,7 @@ async def get_all_users(
         "message": "List of users",
         "ui_message": "List of users from the database",
         "users": users,
-    }, 205
+    }
 
 
 @user_router.post("/", status_code=status.HTTP_201_CREATED)

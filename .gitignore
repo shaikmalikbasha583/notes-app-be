@@ -10,3 +10,4 @@ venv
 tmp
 .ruff_cache
 .pytest_cache
+.coverage

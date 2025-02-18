@@ -37,6 +37,7 @@ async def setup_and_teardown_db():
     yield
 
     async with test_engine.begin() as conn:
+        print("Dropping the tables from the DATABASE")
         await conn.run_sync(Base.metadata.drop_all)
 
 
