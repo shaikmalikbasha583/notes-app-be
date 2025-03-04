@@ -1,6 +1,8 @@
 from contextlib import asynccontextmanager
+import traceback
+import logging
+from fastapi import FastAPI, Request, status, responses
 
-from fastapi import FastAPI, Request, status
 
 from app.main.config.db_config import initialize_db
 from app.main.routers.mapper import route_mapper
@@ -24,6 +26,26 @@ app = FastAPI(
     license_info={"name": "MIT"},
     lifespan=lifespan,
 )
+
+
+@app.exception_handler(Exception)
+def internal_server_error(req: Request, e: Exception):
+    desc = "Please contact the support team for further assistance."
+
+    try:
+        desc = getattr(e, "message", repr(e))
+    except Exception as e:
+        msg = traceback.format_exc(limit=4)
+        logging.warning(msg)
+
+    return responses.JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={
+            "success": False,
+            "message": "Internal Server Error",
+            "description": desc,
+        },
+    )
 
 
 @app.get("/", status_code=status.HTTP_200_OK)

@@ -8,8 +8,8 @@ from app.main.config.vars_config import settings
 # SQLALCHEMY
 engine = create_async_engine(
     settings.SQLALCHEMY_DATABASE_URI,
-    connect_args={"check_same_thread": False},
-    echo=True,
+    connect_args={"check_same_thread": False},  ## This is for SQLite
+    echo=False,
     logging_name=logging.INFO,
 )
 SessionLocal = async_sessionmaker(engine, expire_on_commit=False)
