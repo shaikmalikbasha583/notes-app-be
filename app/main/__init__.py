@@ -1,8 +1,9 @@
-from contextlib import asynccontextmanager
-import traceback
 import logging
-from fastapi import FastAPI, Request, status, responses
+import traceback
+from contextlib import asynccontextmanager
 
+from fastapi import FastAPI, Request, responses, status
+from fastapi.middleware.gzip import GZipMiddleware
 
 from app.main.config.db_config import initialize_db
 from app.main.routers.mapper import route_mapper
@@ -26,6 +27,8 @@ app = FastAPI(
     license_info={"name": "MIT"},
     lifespan=lifespan,
 )
+
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 
 @app.exception_handler(Exception)
