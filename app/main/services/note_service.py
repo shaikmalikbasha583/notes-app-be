@@ -2,11 +2,42 @@ import logging
 from typing import Sequence
 
 from fastapi import HTTPException, status
-from sqlalchemy import select, update
+from sqlalchemy import func, select, text, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.main.models.db_models import Note
 from app.main.schemas.note_schema import CreateNote
+
+
+async def get_notes_count(db: AsyncSession) -> int:
+    logging.info("Fetching notes count...")
+    ## Method - 1
+    stmt1 = (
+        select(text("COUNT(*) as total"))
+        .select_from(Note)
+        .where(Note.is_deleted.is_(False))
+    )
+    print("SQLAlchemy Statement: ", stmt1)
+
+    # ## Method - 2
+    # stmt2 = text("SELECT COUNT(*), MAX(id) FROM notes WHERE is_deleted = :is_deleted")
+    # print("SQLAlchemy Statement: ", stmt2)
+
+    # ## Method - 3
+    # stmt3 = (
+    #     select(
+    #         func.count().label("total"),  # COUNT(*) as total
+    #         func.max(Note.id).label("max_id"),  # MAX(id) as max_id
+    #     )
+    #     .select_from(Note)
+    #     .where(Note.is_deleted.is_(False))
+    # )
+    # print("SQLAlchemy Statement: ", stmt3)
+
+    result = await db.execute(stmt1, {"is_deleted": False})
+    count = result.scalar_one()  ## We have to use fetchone() which returns a tuple
+    logging.info(f"Notes count: {count}")
+    return count
 
 
 async def save_note(db: AsyncSession, note: CreateNote):

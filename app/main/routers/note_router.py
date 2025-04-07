@@ -7,12 +7,24 @@ from app.main.schemas.note_schema import CreateNote, UpdateNote
 from app.main.services.note_service import (
     fetch_all_notes,
     fetch_note_by_id,
+    get_notes_count,
     remove_note_by_id,
     save_note,
     update_note_by_id,
 )
 
 note_router = APIRouter(prefix="/notes", tags=["Note Routers"])
+
+
+@note_router.get("/count", status_code=status.HTTP_200_OK)
+async def get_notes_count_route(db: AsyncSession = Depends(get_db_async)):
+    count = await get_notes_count(db)
+    return {
+        "success": True,
+        "message": "Notes Count",
+        "ui_message": "Notes Count",
+        "notes_count": count,
+    }
 
 
 @note_router.get("/", status_code=status.HTTP_200_OK)
