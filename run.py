@@ -28,4 +28,10 @@ coloredlogs.install(
 
 
 if __name__ == "__main__":
-    uvicorn.run("app.main:app", host=host, port=port, reload=reload_flag)
+    uvicorn.run(
+        "app.main:app",
+        host=host,
+        port=port,
+        reload=reload_flag,
+        use_colors=True,
+    )
