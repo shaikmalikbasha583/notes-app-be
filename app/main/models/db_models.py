@@ -31,7 +31,11 @@ class User(BaseMixin, Base):
     name: Mapped[str] = mapped_column(unique=True)
 
     ## Relationship Attributes
-    notes: Mapped[List["Note"]] = relationship(back_populates="user", lazy="selectin")
+    notes: Mapped[List["Note"]] = relationship(
+        back_populates="user",
+        primaryjoin="and_(User.id == Note.user_id, Note.is_deleted == False)",
+        lazy="selectin",
+    )
 
 
 class DummyTable(BaseMixin, Base):

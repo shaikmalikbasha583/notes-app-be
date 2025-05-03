@@ -51,7 +51,7 @@ def internal_server_error(req: Request, e: Exception):
     )
 
 
-@app.get("/", status_code=status.HTTP_200_OK)
+@app.get("/", status_code=status.HTTP_200_OK, tags=["Index API"])
 async def index(req: Request):
     host: str = f"{req.url.scheme}://{req.url.hostname}:{req.url.port}"
 
