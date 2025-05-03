@@ -4,6 +4,8 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, responses, status
 from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.templating import Jinja2Templates
+from starlette.staticfiles import StaticFiles
 
 from app.main.config.db_config import initialize_db
 from app.main.routers.mapper import route_mapper
@@ -27,6 +29,11 @@ app = FastAPI(
     license_info={"name": "MIT"},
     lifespan=lifespan,
 )
+
+
+# Mount /static path to the ./static folder
+app.mount("/static", StaticFiles(directory="app/main/static"), name="static")
+templates = Jinja2Templates(directory="app/main/templates")
 
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 
@@ -53,13 +60,19 @@ def internal_server_error(req: Request, e: Exception):
 
 @app.get("/", status_code=status.HTTP_200_OK, tags=["Index API"])
 async def index(req: Request):
-    host: str = f"{req.url.scheme}://{req.url.hostname}:{req.url.port}"
-
-    return {
-        "success": True,
-        "docs": host + constants.API_DOCS_URL,
-        "redoc": host + constants.API_REDOCS_URL,
-    }
+    # host: str = f"{req.url.scheme}://{req.url.hostname}:{req.url.port}"
+    return templates.TemplateResponse(
+        "index.html",
+        {
+            "request": req,
+            "name": constants.APP_NAME,
+        },
+    )
+    # return {
+    #     "success": True,
+    #     "docs": host + constants.API_DOCS_URL,
+    #     "redoc": host + constants.API_REDOCS_URL,
+    # }
 
 
 app.include_router(route_mapper, prefix=constants.API_VERSION)

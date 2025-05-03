@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ name }}</title>
+        <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}">
+    </head>
+    <body>
+        <header>
+            <h1 class="app-title">📝 Notes-App</h1>
+        </header>
+        <main>
+            <p class="app-description">A Notes App is a simple web application that allows users to create, manage, and organize their personal notes. Each note typically contains a title, description, and optional metadata like status or target date. The app supports essential features such as:</p>
+
+            <div class="endpoint-section">
+                <h2>📌 Available Endpoints</h2>
+                <ul class="endpoint-list">
+                    <li><a href="/graphql" target="_blank">🧠 GraphQL Playground – For all the Backend</a></li>
+                    <li><a href="/docs" target="_blank">📘 Swagger UI – REST API Documentation</a></li>
+                    <li><a href="/redocs" target="_blank">📕 ReDoc – Alternate REST Docs</a></li>
+                </ul>
+            </div>
+            
+        </main>
+        <footer class="app-footer">
+            
+        </footer>
+</html>
