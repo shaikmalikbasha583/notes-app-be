@@ -4,10 +4,10 @@ from fastapi import APIRouter, Depends, Query, status
 
 from app.main.config.db_config import AsyncSession, get_db_async
 from app.main.schemas.note_schema import CreateNote, UpdateNote
+from app.main.services.custom_query_service import get_notes_count
 from app.main.services.note_service import (
     fetch_all_notes,
     fetch_note_by_id,
-    get_notes_count,
     remove_note_by_id,
     save_note,
     update_note_by_id,

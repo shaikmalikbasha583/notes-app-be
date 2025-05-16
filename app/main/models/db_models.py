@@ -7,12 +7,12 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.main.config.db_config import Base
 from app.main.utils.common_utils import get_timestamp_in_utc
 
-DB_SCHEMA: str = "notes"
+from app.main.utils import constants
 
 
 class BaseMixin(object):
     __mapper_args__ = {"always_refresh": True}
-    # __table_args__ = {"schema": DB_SCHEMA}
+    # __table_args__ = {"schema": constants.DB_SCHEMA}
 
     id: Mapped[int] = mapped_column(primary_key=True, sort_order=-1)
     created_by: Mapped[int] = mapped_column(default=0)
