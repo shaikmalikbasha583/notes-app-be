@@ -2,7 +2,7 @@ import logging
 from typing import Sequence
 
 from fastapi import HTTPException, status
-from sqlalchemy import func, select, text, update
+from sqlalchemy import select, text, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.main.models.db_models import Note

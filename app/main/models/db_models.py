@@ -7,8 +7,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.main.config.db_config import Base
 from app.main.utils.common_utils import get_timestamp_in_utc
 
-from app.main.utils import constants
-
 
 class BaseMixin(object):
     __mapper_args__ = {"always_refresh": True}
